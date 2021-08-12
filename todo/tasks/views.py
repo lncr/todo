@@ -18,6 +18,9 @@ class TaskCreateView(generics.CreateAPIView):
     serializer_class = TaskSerializer
 
     def perform_create(self, serializer):
+        '''
+        Функция для сохранения нынешнего пользователя владельцем созданной им задачи
+        '''
         return serializer.save(owner=self.request.user)
 
 
