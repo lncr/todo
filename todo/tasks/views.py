@@ -1,4 +1,3 @@
-from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -17,6 +16,9 @@ class TaskCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, ]
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+    def perform_create(self, serializer):
+        return serializer.save(owner=self.request.user)
 
 
 class TaskDetailGenericView(generics.RetrieveAPIView):
