@@ -1,7 +1,7 @@
-from rest_framework.generics import get_object_or_404
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import views, viewsets
+from rest_framework import viewsets
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
 
@@ -14,15 +14,10 @@ class TaskView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(owner=self.request.user)
 
-
-class SetFinishedTaskAPIView(views.APIView):
-
-    def post(self, request, id):
-        task = get_object_or_404(Task, id=id)
-        if task.is_finished:
-            task.is_finished = False
-        else:
-            task.is_finished = True
+    @action(methods=['post', ], detail=True)
+    def finished(self, request, pk=None):
+        task = self.get_object()
+        task.is_finished = not task.is_finished
         task.save()
-        serializer = TaskSerializer(instance=task)
+        serializer = self.get_serializer(instance=task)
         return Response(serializer.data)
