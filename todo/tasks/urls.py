@@ -1,13 +1,12 @@
 from django.urls import path
+from rest_framework.routers import SimpleRouter
 
-from tasks.views import TaskListView, TaskDetailGenericView, SetFinishedTaskAPIView, TaskCreateView, \
-    TaskUpdateGenericView, TaskDestroyGenericView
+from tasks.views import SetFinishedTaskAPIView, TaskView
 
+router = SimpleRouter()
+router.register('tasks', TaskView)
 urlpatterns = [
-    path('tasks/', TaskListView.as_view()),
-    path('tasks/creation/', TaskCreateView.as_view()),
-    path('tasks/<int:id>/', TaskDetailGenericView.as_view()),
-    path('tasks/<int:id>/update/', TaskUpdateGenericView.as_view()),
-    path('tasks/<int:id>/delete/', TaskDestroyGenericView.as_view()),
     path('tasks/<int:id>/finished/', SetFinishedTaskAPIView.as_view()),
 ]
+
+urlpatterns += router.urls

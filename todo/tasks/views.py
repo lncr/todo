@@ -1,47 +1,18 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import views, generics
+from rest_framework import views, viewsets
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
 
 
-class TaskListView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated, ]
-    queryset = Task.objects.all()
+class TaskView(viewsets.ModelViewSet):
+    queryset = Task.objects.all().order_by('-id')
     serializer_class = TaskSerializer
-
-
-class TaskCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, ]
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
 
     def perform_create(self, serializer):
-        '''
-        Функция для сохранения нынешнего пользователя владельцем созданной им задачи
-        '''
         return serializer.save(owner=self.request.user)
-
-
-class TaskDetailGenericView(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated, ]
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-    lookup_field = 'id'
-
-
-class TaskUpdateGenericView(generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated, ]
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-    lookup_field = 'id'
-
-
-class TaskDestroyGenericView(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated, ]
-    queryset = Task.objects.all()
-    lookup_field = 'id'
 
 
 class SetFinishedTaskAPIView(views.APIView):
