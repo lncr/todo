@@ -33,6 +33,12 @@ class TaskUpdateGenericView(generics.UpdateAPIView):
     lookup_field = 'id'
 
 
+class TaskDestroyGenericView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated, ]
+    queryset = Task.objects.all()
+    lookup_field = 'id'
+
+
 class SetFinishedTaskAPIView(views.APIView):
 
     def post(self, request, id):
