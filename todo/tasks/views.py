@@ -19,27 +19,11 @@ class TaskCreateView(generics.CreateAPIView):
     serializer_class = TaskSerializer
 
 
-class TaskDetailAPIView(views.APIView):
+class TaskDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated, ]
-
-    def get(self, request, id):
-        task = get_object_or_404(Task, id=id)
-        serializer = TaskSerializer(task)
-        return Response(serializer.data)
-
-    def put(self, request, id):
-        task = get_object_or_404(Task, id=id)
-        serializer = TaskSerializer(data=request.data)
-        if serializer.is_valid():
-            update_fields = []
-            for field, value in serializer.validated_data.items():
-                setattr(task, field, value)
-                update_fields.append(field)
-            task.save(update_fields=update_fields)
-
-            serializer = TaskSerializer(instance=task)
-            return Response(serializer.data)
-        return Response({'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    lookup_field = 'id'
 
 
 class SetFinishedTaskAPIView(views.APIView):
