@@ -26,6 +26,13 @@ class TaskDetailGenericView(generics.RetrieveAPIView):
     lookup_field = 'id'
 
 
+class TaskUpdateGenericView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, ]
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    lookup_field = 'id'
+
+
 class SetFinishedTaskAPIView(views.APIView):
 
     def post(self, request, id):
